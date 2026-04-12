@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_task/view/forgetPassword_screen.dart';
 import 'package:my_task/view/signUp_screen.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
 import 'package:my_task/widgets/reusable/custom_textformField.dart';
@@ -80,7 +81,13 @@ class _SigninScreenState extends State<SigninScreen> {
                   const Text('Remember me'),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ForgetpasswordScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Forgot Password?',
                       style: TextStyle(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_task/view/signIn_screen.dart';
+import 'package:my_task/view/signUp_verify_screen.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
 import 'package:my_task/widgets/reusable/custom_textformField.dart';
 
@@ -10,7 +12,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  bool _rememberMe = false;
   final TextEditingController _passwordController = TextEditingController();
   int _passwordStrength = 0;
   String _passwordStrengthLabel = 'Too weak';
@@ -46,11 +47,15 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.of(context).maybePop();
-          },
+        toolbarHeight: kToolbarHeight + 22,
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 20),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () {
+              Navigator.of(context).maybePop();
+            },
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -203,8 +208,12 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               CustomButton(
-                text: 'Sign In',
-                onPressed: () {},
+                text: 'Sign Up',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SignupVerifyScreen(),
+                  ));
+                },
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Row(
@@ -216,7 +225,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     onTap: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => '\homepage' as Widget,
+                          builder: (context) => const SigninScreen(),
                         ),
                       );
                     },
