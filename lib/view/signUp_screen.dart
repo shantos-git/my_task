@@ -1,0 +1,240 @@
+import 'package:flutter/material.dart';
+import 'package:my_task/widgets/reusable/custom_button.dart';
+import 'package:my_task/widgets/reusable/custom_textformField.dart';
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  bool _rememberMe = false;
+  final TextEditingController _passwordController = TextEditingController();
+  int _passwordStrength = 0;
+  String _passwordStrengthLabel = 'Too weak';
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _updatePasswordStrength(String password) {
+    int strength = 0;
+    if (password.length >= 8) strength++;
+    if (RegExp(r'(?=.*[A-Z])').hasMatch(password)) strength++;
+    if (RegExp(r'(?=.*[0-9])').hasMatch(password)) strength++;
+    if (RegExp(r'(?=.*[!@#\$%^&*(),.?":{}|<>])').hasMatch(password)) strength++;
+
+    setState(() {
+      _passwordStrength = strength;
+      if (strength <= 1) {
+        _passwordStrengthLabel = 'Weak';
+      } else if (strength == 2) {
+        _passwordStrengthLabel = 'Fair';
+      } else if (strength == 3) {
+        _passwordStrengthLabel = 'Good';
+      } else {
+        _passwordStrengthLabel = 'Strong';
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context).maybePop();
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Welcome to Eduline',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01,
+              ),
+              Text(
+                'Let’s join to Eduline learning ecosystem & meet our professional mentor. It’s Free!',
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
+              CustomTextformfield(
+                labelText: 'Email Address',
+                hintText: 'Enter your email',
+                keyboardType: TextInputType.emailAddress,
+              ),
+              CustomTextformfield(
+                labelText: 'Full Name',
+                hintText: 'Enter your full name',
+                keyboardType: TextInputType.name,
+              ),
+              CustomTextformfield(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+                suffixIcon: Icons.visibility_outlined,
+                controller: _passwordController,
+                onChanged: _updatePasswordStrength,
+              ),
+              SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: _passwordStrength >= 1
+                                  ? Colors.blue
+                                  : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: _passwordStrength >= 2
+                                  ? Colors.blue
+                                  : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: _passwordStrength >= 3
+                                  ? Colors.blue
+                                  : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: _passwordStrength >= 4
+                                  ? Colors.blue
+                                  : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    _passwordStrengthLabel,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: _passwordStrength >= 3 ? Colors.green : Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 15,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.green, width: 1),
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 10,
+                      color: Colors.green,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _passwordStrength <= 1
+                          ? 'Use at least 8 characters, uppercase letters, numbers and symbols.'
+                          : _passwordStrength == 2
+                              ? 'Add uppercase letters, numbers or symbols to improve strength.'
+                              : _passwordStrength == 3
+                                  ? 'Almost strong—add one more symbol or number.'
+                                  : 'Great! Your password is strong and secure.',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              CustomButton(
+                text: 'Sign In',
+                onPressed: () {},
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account? '),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => '\homepage' as Widget,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
