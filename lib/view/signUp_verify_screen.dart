@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_task/view/location_screen.dart';
 import 'package:my_task/view/signUp_screen.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
 
@@ -85,7 +86,6 @@ class _SignupVerifyScreenState extends State<SignupVerifyScreen> {
     if (enteredOtp.length < 4) return;
 
     if (enteredOtp == _correctOtp) {
-      Navigator.pop(context);
       showDialog(
           context: context,
           builder: (_) {
@@ -145,7 +145,18 @@ class _SignupVerifyScreenState extends State<SignupVerifyScreen> {
                 'Your account has been registered\nsuccessfully, now let’s enjoy our features!',
                 textAlign: TextAlign.center,
               ),
-              actions: [CustomButton(text: 'Continue', onPressed: () {})],
+              actions: [
+                CustomButton(
+                    text: 'Continue',
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LocationScreen(),
+                        ),
+                      );
+                    })
+              ],
             );
           });
     } else {
