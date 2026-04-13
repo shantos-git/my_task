@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:my_task/view/signIn_screen.dart';
 import 'package:my_task/widgets/helper/onBoardPageModel.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
@@ -96,11 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeIn);
                 } else {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const SigninScreen(),
-                    ),
-                  );
+                  Get.to(const SigninScreen());
                 }
               },
             ),

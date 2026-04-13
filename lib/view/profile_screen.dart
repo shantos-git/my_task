@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:my_task/view/signIn_screen.dart';
 import 'package:my_task/widgets/reusable/profile_option_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -101,7 +103,9 @@ class ProfileScreen extends StatelessWidget {
                     top: 10,
                   ),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(SigninScreen());
+                    },
                     child: Container(
                       color: Colors.white,
                       height: 60,

@@ -75,10 +75,7 @@ class _SignupScreenState extends State<SignupScreen> {
           _name.text, _email.text, _passwordController.text, null);
 
       if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      Get.to(const SignupVerifyScreen());
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Account created successfully')),
