@@ -4,14 +4,14 @@ import 'package:my_task/widgets/reusable/custom_select_field.dart';
 import 'package:my_task/widgets/reusable/custom_textformField.dart';
 import 'package:my_task/widgets/reusable/upload_photo_card.dart';
 
-class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+class EditproductScreen extends StatefulWidget {
+  const EditproductScreen({super.key});
 
   @override
-  State<AddProductScreen> createState() => _AddProductScreenState();
+  State<EditproductScreen> createState() => _EditproductScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
+class _EditproductScreenState extends State<EditproductScreen> {
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -63,7 +63,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         foregroundColor: Colors.black,
         centerTitle: true,
         title: const Text(
-          'Add New Product',
+          'Edit Product',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
