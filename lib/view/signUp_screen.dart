@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart';
+import 'package:my_task/services/RegisterServices.dart';
+
+import 'package:my_task/view/home_screen.dart';
 import 'package:my_task/view/signIn_screen.dart';
 import 'package:my_task/view/signUp_verify_screen.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
@@ -12,13 +18,20 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _name = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   int _passwordStrength = 0;
   String _passwordStrengthLabel = 'Too weak';
+  bool _isLoading = false;
+  RegisterServices _registerServices = RegisterServices();
 
   @override
   void dispose() {
     _passwordController.dispose();
+    _email.dispose();
+    _name.dispose();
+
     super.dispose();
   }
 
@@ -41,6 +54,49 @@ class _SignupScreenState extends State<SignupScreen> {
         _passwordStrengthLabel = 'Strong';
       }
     });
+  }
+
+  Future<void> _handleSignUp() async {
+    if (_email.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _name.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter all fields')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await _registerServices.register(
+          _name.text, _email.text, _passwordController.text, null);
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Account created successfully')),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed : $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -82,11 +138,13 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: MediaQuery.of(context).size.height * 0.03,
               ),
               CustomTextformfield(
+                controller: _email,
                 labelText: 'Email Address',
                 hintText: 'Enter your email',
                 keyboardType: TextInputType.emailAddress,
               ),
               CustomTextformfield(
+                controller: _name,
                 labelText: 'Full Name',
                 hintText: 'Enter your full name',
                 keyboardType: TextInputType.name,
@@ -210,9 +268,7 @@ class _SignupScreenState extends State<SignupScreen> {
               CustomButton(
                 text: 'Sign Up',
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SignupVerifyScreen(),
-                  ));
+                  _isLoading ? null : _handleSignUp();
                 },
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
