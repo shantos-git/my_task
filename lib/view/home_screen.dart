@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:my_task/controller/product_controller.dart';
 import 'package:my_task/model/serviceItemModel.dart';
 import 'package:my_task/view/addProduct_screen.dart';
 import 'package:my_task/view/profile_screen.dart';
@@ -16,76 +18,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedTab = 0;
 
-  final List<ServiceItem> services = [
-    ServiceItem(
-      title: 'Headphone',
-      category: 'Electronics',
-      price: '22.50',
-      iconData: Icons.headphones,
-      color: const Color(0xFFE3F2FF),
-      inStock: true,
-      subtitle: 'Corsair Gaming Headphones',
-      discount: '10',
-      brand: 'Corsair Brand',
-      weight: '0.9',
-      dimensions: '45 x 13 x 2.5 cm',
-      status: 'active',
-      tags: const ['Peripherals Category', 'Gaming'],
-      description:
-          'PipeMaster Plumbing is not just a service; it’s a commitment to providing reliable and efficient plumbing solutions, ensuring your home or business runs smoothly.',
-    ),
-    ServiceItem(
-      title: 'Smartphone',
-      category: 'Electronics',
-      price: '10.99',
-      iconData: Icons.smartphone,
-      color: const Color(0xFFEBF9F6),
-      inStock: true,
-      subtitle: 'Ultra Wide Display Phone',
-      discount: '11',
-      brand: 'Galaxy Series',
-      weight: '0.18',
-      dimensions: '15 x 7 x 0.8 cm',
-      status: 'active',
-      tags: const ['Mobile', 'Connectivity'],
-      description:
-          'Experience powerful performance and sleek design with advanced camera features built for modern demanding users.',
-    ),
-    ServiceItem(
-      title: 'LED Light',
-      category: 'Electronics',
-      price: '12.00',
-      iconData: Icons.lightbulb,
-      color: const Color(0xFFFFF2E0),
-      inStock: true,
-      subtitle: 'Smart Home Lighting',
-      discount: '8',
-      brand: 'Luma Tech',
-      weight: '0.4',
-      dimensions: '12 x 5 x 3 cm',
-      status: 'active',
-      tags: const ['Lighting', 'Home'],
-      description:
-          'Brighten your living space with energy-efficient lighting designed for comfort and convenience.',
-    ),
-    ServiceItem(
-      title: 'Table Fan',
-      category: 'Electronics',
-      price: '15.99',
-      iconData: Icons.toys,
-      color: const Color(0xFFF8EBFF),
-      inStock: true,
-      subtitle: '360° Air Circulation Fan',
-      discount: '10',
-      brand: 'AeroFlow',
-      weight: '2.1',
-      dimensions: '40 x 40 x 10 cm',
-      status: 'active',
-      tags: const ['Cooling', 'Outdoor'],
-      description:
-          'Keep cool with a powerful fan that delivers quiet, wide-angle airflow wherever you need it.',
-    ),
-  ];
+  late final ProductController productController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!Get.isRegistered<ProductController>()) {
+      Get.put(ProductController());
+    }
+    productController = Get.find<ProductController>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,32 +141,54 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 20),
                       Expanded(
-                        child: GridView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: services.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.73,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                          ),
-                          itemBuilder: (context, index) {
-                            return ServiceCard(
-                              service: services[index],
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ServiceDetailsScreen(
-                                      service: services[index],
-                                    ),
-                                  ),
+                        child: Obx(() => GridView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: productController.products.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.73,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
+                              itemBuilder: (context, index) {
+                                final product =
+                                    productController.products[index];
+                                final serviceItem = ServiceItem(
+                                  title: product.name ?? 'No Name',
+                                  category: product.category ?? 'No Category',
+                                  price: product.price?.toString() ?? '0',
+                                  iconData: Icons.inventory,
+                                  color: const Color(0xFFE3F2FF),
+                                  inStock: (product.stock ?? 0) > 0,
+                                  subtitle: product.description ?? '',
+                                  discount:
+                                      product.discountPercent?.toString() ?? '',
+                                  brand: product.brand ?? '',
+                                  weight: product.weight?.toString() ?? '',
+                                  dimensions: product.dimensions ?? '',
+                                  status: product.isActive == true
+                                      ? 'active'
+                                      : 'inactive',
+                                  tags: product.tags ?? [],
+                                  description: product.description ?? '',
+                                );
+                                return ServiceCard(
+                                  service: serviceItem,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ServiceDetailsScreen(
+                                          service: serviceItem,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                        ),
+                            )),
                       ),
                       const SizedBox(height: 12),
                       CustomButton(

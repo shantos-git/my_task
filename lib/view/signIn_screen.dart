@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:my_task/controller/product_controller.dart';
+import 'package:my_task/model/ProductsModel.dart';
+import 'package:my_task/services/getProducts.dart';
+import 'package:my_task/services/loginService.dart';
 import 'package:my_task/view/forgetPassword_screen.dart';
+import 'package:my_task/view/home_screen.dart';
 import 'package:my_task/view/signUp_screen.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
 import 'package:my_task/widgets/reusable/custom_textformField.dart';
@@ -13,6 +19,71 @@ class SigninScreen extends StatefulWidget {
 
 class _SigninScreenState extends State<SigninScreen> {
   bool _rememberMe = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final LoginService _loginService = LoginService();
+  final GetProduct _getProduct = GetProduct();
+  bool _isLoading = false;
+
+  Future<void> _handleSignIn() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter email and password')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await _loginService.login(
+        _emailController.text,
+        _passwordController.text,
+        null,
+      );
+
+      final token = result['data']['token'] as String?;
+
+      if (token == null) {
+        throw Exception('No token received from login');
+      }
+
+      final products = await _getProduct.fetchProducts(token);
+
+      ProductsModel productsModel = ProductsModel.fromJson(products);
+
+      if (!Get.isRegistered<ProductController>()) {
+        Get.put(ProductController());
+      }
+      Get.find<ProductController>().setProducts(productsModel.data ?? []);
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed : $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +119,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 labelText: 'Email Address',
                 hintText: 'Enter your email',
                 keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
               ),
               CustomTextformfield(
                 labelText: 'Password',
@@ -55,6 +127,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
                 suffixIcon: Icons.visibility_outlined,
+                controller: _passwordController,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.001,
@@ -99,8 +172,8 @@ class _SigninScreenState extends State<SigninScreen> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               CustomButton(
-                text: 'Sign In',
-                onPressed: () {},
+                text: _isLoading ? 'Signing In...' : 'Sign In',
+                onPressed: _isLoading ? () {} : _handleSignIn,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Row(

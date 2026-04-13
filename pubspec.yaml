@@ -37,6 +37,8 @@ dependencies:
   country_flags: ^2.2.0
   image_picker: ^1.1.2
   dotted_border: ^2.1.0
+  http: ^1.6.0
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
