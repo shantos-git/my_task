@@ -61,7 +61,12 @@ class _SigninScreenState extends State<SigninScreen> {
       Get.find<ProductController>().setProducts(productsModel.data ?? []);
 
       if (!mounted) return;
-      Get.to(const HomeScreen());
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),
@@ -152,7 +157,12 @@ class _SigninScreenState extends State<SigninScreen> {
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
-                      Get.to(const ForgetpasswordScreen());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgetpasswordScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Forgot Password?',
@@ -176,7 +186,12 @@ class _SigninScreenState extends State<SigninScreen> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   GestureDetector(
                     onTap: () {
-                      Get.to(const SignupScreen());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Create Account',

@@ -98,7 +98,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeIn);
                 } else {
-                  Get.to(const SigninScreen());
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SigninScreen(),
+                    ),
+                  );
                 }
               },
             ),

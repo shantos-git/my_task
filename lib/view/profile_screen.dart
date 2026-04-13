@@ -104,7 +104,12 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(SigninScreen());
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SigninScreen(),
+                        ),
+                      );
                     },
                     child: Container(
                       color: Colors.white,

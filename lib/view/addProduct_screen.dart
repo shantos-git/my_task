@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_task/widgets/reusable/custom_button.dart';
 import 'package:my_task/widgets/reusable/custom_select_field.dart';
 import 'package:my_task/widgets/reusable/custom_textformField.dart';
@@ -68,7 +69,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
